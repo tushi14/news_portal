@@ -20,6 +20,11 @@ $result = mysqli_query($conn, $query);
             grid-template-columns: repeat(3, 1fr);
             gap: 15px;
         }
+        @media (max-width: 900px) {
+    .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
 
         .header {
             width: 100%;
@@ -80,6 +85,15 @@ $result = mysqli_query($conn, $query);
             border-top: 2px solid #ccc;
             margin: 30px 0;
         }
+        html, body {
+    height: auto;
+    overflow-y: auto;
+}
+.news-box img,
+.featured img {
+    width: 100%;
+    height: auto;
+}
     </style>
 </head>
 
