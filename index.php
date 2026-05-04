@@ -3,98 +3,106 @@ include "db.php";
 
 $query = "SELECT * FROM news ORDER BY id DESC";
 $result = mysqli_query($conn, $query);
+
+$first = true;
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>News Portal</title>
+<title>News Portal</title>
 
-    <style>
-        body {
-            background: #f4f4f4;
-            font-family: Arial, sans-serif;
-        }
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-        }
-        @media (max-width: 900px) {
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #f4f4f4;
+}
+
+.header {
+    background: white;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+.logo {
+    width: 180px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
+
+.featured {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    transition: 0.3s;
+}
+
+.featured:hover {
+    transform: scale(1.02);
+    cursor: pointer;
+}
+
+.featured img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.news-box {
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.news-box:hover {
+    transform: scale(1.03);
+}
+
+.news-box img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.news-box h3 {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.news-box p {
+    font-size: 12px;
+}
+
+@media (max-width: 900px) {
     .news-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-        .header {
-            width: 100%;
-            padding: 10px 20px;
-            background: white;
-            border-bottom: 1px solid #b2a3a3;
-        }
-
-        .logo {
-            width: 180px;
-            height: auto;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-        
-
-        .featured {
-            background: white;
-            padding: 15px;
-            max-width: 700px;
-            margin-bottom: 30px;
-            border-radius: 20px;
-            border: 1px solid #755757;
-            padding-top: 10px;
-        }
-
-        .featured img {
-            
-            max-width: 600px;
-            height: auto;
-        }
-
-        .news-box {
-            background: #d4caca;
-            border: 1px solid #e1dada;
-            padding: 20px;
-            margin-bottom: 25px;
-            border-radius: 8px;
-        }
-
-        .news-box img {
-            width: 250px;
-            height: auto;
-        }
-
-        .news-actions a {
-            display: inline-block;
-            margin-right: 10px;
-            text-decoration: none;
-        }
-
-        hr {
-            border: none;
-            border-top: 2px solid #ccc;
-            margin: 30px 0;
-        }
-        html, body {
-    height: auto;
-    overflow-y: auto;
+@media (max-width: 500px) {
+    .news-grid {
+        grid-template-columns: 1fr;
+    }
 }
-.news-box img,
-.featured img {
-    width: 100%;
-    height: auto;
-}
-    </style>
+
+</style>
 </head>
 
 <body>
@@ -102,71 +110,48 @@ $result = mysqli_query($conn, $query);
 <div class="header">
     <img src="uploads/logo1.png" class="logo">
 </div>
-<br>
 
-<?php
-if (mysqli_num_rows($result) > 0) {
+<div class="container">
 
-    $first = true;
-    
-    while ($row = mysqli_fetch_assoc($result)) {
+<?php while ($row = mysqli_fetch_assoc($result)) { ?>
 
-        if ($first) {
-?>
+    <?php if ($first) { ?>
 
+        <a href="news_details.php?id=<?php echo $row['id']; ?>" style="text-decoration:none; color:black; display:block;">
             <div class="featured">
                 <h1><?php echo $row['headline']; ?></h1>
 
                 <?php if (!empty($row['image'])) { ?>
-                    <img src="uploads/<?php echo $row['image']; ?>">
+                    <img src="uploads/<?php echo $row['image']; ?>" alt="news image">
                 <?php } ?>
 
                 <p><?php echo substr($row['content'], 0, 150); ?>...</p>
-
-                <div class="news-actions">
-                    <a href="news_details.php?id=<?php echo $row['id']; ?>">Read More</a>
-                    <a href="delete_news.php?id=<?php echo $row['id']; ?>" onclick="return confirm('Are you sure?')">Delete</a>
-                </div>
             </div>
-            
-<hr>
-            
+        </a>
 
-<?php
-            $first = false;
+        <div class="news-grid">
 
-        } else {
-            
-?>
-            <div class="news-grid">
+        <?php $first = false; ?>
+
+    <?php } else { ?>
+
+        <a href="news_details.php?id=<?php echo $row['id']; ?>" style="text-decoration:none; color:black;">
             <div class="news-box">
-                <h2><?php echo $row['headline']; ?></h2>
 
                 <?php if (!empty($row['image'])) { ?>
-                    <img src="uploads/<?php echo $row['image']; ?>" width="250">
+                    <img src="uploads/<?php echo $row['image']; ?>" alt="news image">
                 <?php } ?>
 
-                <p><?php echo substr($row['content'], 0, 100); ?>...</p>
+                <h3><?php echo $row['headline']; ?></h3>
+                <p><?php echo substr($row['content'], 0, 80); ?>...</p>
 
-                <div class="news-actions">
-                    <a href="news_details.php?id=<?php echo $row['id']; ?>">Read More</a>
-                    <a href="delete_news.php?id=<?php echo $row['id']; ?>" onclick="return confirm('Are you sure?')">Delete</a>
-                </div>
             </div>
-        
+        </a>
 
-<?php
-        }
-    }
+    <?php } ?>
 
-} else {
-?>
+<?php } ?>
 
-    <p>No news found</p>
-
-<?php
-}
-?>
 </div>
 
 </div>
